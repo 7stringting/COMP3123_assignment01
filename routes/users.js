@@ -4,7 +4,7 @@ const bcrypt = require("bcrypt"); // Import bcrypt for password hashing
 const routes = express.Router();
 
 // Get All Users
-routes.get("/users", async (req, res) => {
+routes.get("/user", async (req, res) => {
     try {
         const userList = await userModel.find();
         res.status(200).json(userList);
@@ -14,7 +14,7 @@ routes.get("/users", async (req, res) => {
 });
 
 // Add a New User
-routes.post("/users/signup", async (req, res) => {
+routes.post("/user/signup", async (req, res) => {
     try {
         const { username, password, email } = req.body;
         // Check if the user already exists (you can implement this logic)
@@ -35,7 +35,7 @@ routes.post("/users/signup", async (req, res) => {
 });
 
 // Update an Existing User by ID
-routes.put("/users/:userid", async (req, res) => {
+routes.put("/user/:userid", async (req, res) => {
     try {
         const updatedUser = await userModel.findByIdAndUpdate(req.params.userid, req.body);
         res.status(200).json(updatedUser);
@@ -45,7 +45,7 @@ routes.put("/users/:userid", async (req, res) => {
 });
 
 // Delete User By ID
-routes.delete("/users/:userid", async (req, res) => {
+routes.delete("/user/:userid", async (req, res) => {
     try {
         const user = await userModel.findByIdAndDelete(req.params.userid);
         if (!user) {
@@ -59,7 +59,7 @@ routes.delete("/users/:userid", async (req, res) => {
 });
 
 // Get User By ID
-routes.get("/users/:userid", async (req, res) => {
+routes.get("/user/:userid", async (req, res) => {
     try {
         const user = await userModel.findById(req.params.userid);
         res.status(200).json(user);
@@ -69,7 +69,7 @@ routes.get("/users/:userid", async (req, res) => {
 });
 
 // Get All Users in Sorted Order
-routes.get("/users/sort", (req, res) => {
+routes.get("/user/sort", (req, res) => {
     res.send({ message: "Get All Users in sorted order" });
 });
 
