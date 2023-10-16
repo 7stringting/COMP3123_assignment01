@@ -1,8 +1,8 @@
 const express = require("express");
 const mongoose = require("mongoose");
-const userModel = require("./model/user");
+const userModel = require("./model/user.js");
 const bcrypt = require("bcrypt");
-const app = express(); // Create a new Express app
+const app = express(); 
 
 const SERVER_PORT = 3000;
 
@@ -23,11 +23,12 @@ database.once('open', () => {
     console.log('Database connection successful');
 });
 
-// Import and use your user routes defined in users.js
 const userRoutes = require("./routes/users");
 app.use("/api/v1", userRoutes);
 
-// Start your Express app
+const employeeRoutes = require('./routes/employees');
+app.use('/api/v1/emp', employeeRoutes);
+
 app.listen(SERVER_PORT, () => {
     console.log(`Server running at http://localhost:${SERVER_PORT}/`);
 });

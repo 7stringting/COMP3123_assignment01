@@ -1,6 +1,6 @@
 const express = require("express");
-const userModel = require('../model/user'); // Import your user model
-const bcrypt = require("bcrypt"); // Import bcrypt for password hashing
+const userModel = require('../model/user.js'); 
+const bcrypt = require("bcrypt"); 
 const routes = express.Router();
 
 // Get All Users
@@ -17,8 +17,7 @@ routes.get("/user", async (req, res) => {
 routes.post("/user/signup", async (req, res) => {
     try {
         const { username, password, email } = req.body;
-        // Check if the user already exists (you can implement this logic)
-        // Hash the password
+        
         const hashedPassword = await bcrypt.hash(password, 10);
         // Create a new user
         const newUser = new userModel({
@@ -34,43 +33,33 @@ routes.post("/user/signup", async (req, res) => {
     }
 });
 
-// Update an Existing User by ID
-routes.put("/user/:userid", async (req, res) => {
+// User Login
+routes.post("/user/login", async (req, res) => {
     try {
-        const updatedUser = await userModel.findByIdAndUpdate(req.params.userid, req.body);
-        res.status(200).json(updatedUser);
-    } catch (error) {
-        res.status(500).json(error);
-    }
-});
+        const { username, password } = req.body;
+        
+        // Find the user by username
+        const user = await userModel.findOne({ username });
 
-// Delete User By ID
-routes.delete("/user/:userid", async (req, res) => {
-    try {
-        const user = await userModel.findByIdAndDelete(req.params.userid);
         if (!user) {
-            res.status(200).json({ message: "User not found" });
-        } else {
-            res.status(200).json(user);
+            return res.status(401).json({ message: "User not found" });
         }
+
+        // Compare the provided password with the hashed password in the database
+        const passwordMatch = await bcrypt.compare(password, user.password);
+
+        if (!passwordMatch) {
+            return res.status(401).json({ message: "Invalid password" });
+        }
+
+        res.status(200).json({ message: "Login successful" });
     } catch (error) {
         res.status(500).json(error);
     }
 });
 
-// Get User By ID
-routes.get("/user/:userid", async (req, res) => {
-    try {
-        const user = await userModel.findById(req.params.userid);
-        res.status(200).json(user);
-    } catch (error) {
-        res.status(500).json(error);
-    }
-});
 
-// Get All Users in Sorted Order
-routes.get("/user/sort", (req, res) => {
-    res.send({ message: "Get All Users in sorted order" });
-});
+
+
 
 module.exports = routes;
