@@ -45,7 +45,7 @@ routes.post("/user/login", async (req, res) => {
             return res.status(401).json({ message: "User not found" });
         }
 
-        // Compare the provided password with the hashed password in the database
+        //Password comparision
         const passwordMatch = await bcrypt.compare(password, user.password);
 
         if (!passwordMatch) {
@@ -57,9 +57,5 @@ routes.post("/user/login", async (req, res) => {
         res.status(500).json(error);
     }
 });
-
-
-
-
 
 module.exports = routes;
