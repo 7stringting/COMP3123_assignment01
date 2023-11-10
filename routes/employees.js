@@ -12,6 +12,23 @@ routes.get('/emp/employees', async (req, res, next) => {
     }
 });
 
+//Create Employee
+routes.post("/employees", async (req, res) => {
+    console.log(req.body)
+    try{
+        const newEmployee = new employeeModel({
+            ...req.body
+        })
+        await newEmployee.save()
+        //EmployeeModel.create({})
+        res.status(200).send(newEmployee)
+    }catch(error){
+        res.status(500).send(error)
+    }
+
+    //res.send({message: "Add NEW Employee"})
+})
+
 // Get Employee by ID 
 routes.get('/emp/employees/:eid', async (req, res, next) => {
     try {

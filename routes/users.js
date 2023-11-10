@@ -14,28 +14,25 @@ routes.get("/user", async (req, res) => {
 });
 
 // Add a New User
-routes.post("/user/signup", async (req, res, next) => {
-    try {
-        const { username, password, email } = req.body;
-        
-        // Here you might want to add additional validation for the input
+routes.post('/signup', (req, res) => {
+    const user = req.body;
 
-        const hashedPassword = await bcrypt.hash(password, 10);
-        const newUser = new userModel({
-            username,
-            password: hashedPassword,
-            email,
-        });
+    if (!user || !user.username || !user.password) {
+      res.status(400).json({ message: 'Username and password are required' });
+    } else {
 
-        await newUser.save();
-        res.status(201).json({ message: "User created successfully" });
-    } catch (error) {
-        next(error); // Pass the error to the error-handling middleware
+      const existingUser = users.find((u) => u.username === user.username);
+      if (existingUser) {
+        res.status(409).json({ message: 'Username already exists' });
+      } else {
+        users.push(user);
+        res.status(201).json({ message: 'User account created successfully' });
+      }
     }
-});
+  });
 
 // User Login
-routes.post("/user/login", async (req, res) => {
+routes.post("/login", async (req, res) => {
     try {
         const { username, password } = req.body;
         
