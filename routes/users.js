@@ -60,7 +60,7 @@ routes.post("/user/login", async (req, res) => {
 });
 
 // Error handling middleware
-app.use((error, req, res, next) => {
+routes.use((error, req, res, next) => {
     if (error.name === 'ValidationError') {
       res.status(400).json({ message: 'Invalid request data' });
     } else if (error.name === 'MongoError' && error.code === 11000) {

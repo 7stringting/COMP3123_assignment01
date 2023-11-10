@@ -61,15 +61,12 @@ routes.delete('/emp/employees', async (req, res, next) => {
     }
 });
 
-// Error handling middleware
 routes.use((error, req, res, next) => {
-  console.error(error); // Log the error for server-side debugging
+  console.error(error); 
 
   if (error.name === 'CastError' && error.kind === 'ObjectId') {
     return res.status(400).json({ message: 'Invalid employee ID format' });
   }
-  // Add more error types as necessary
-
   res.status(500).json({ message: 'An unexpected error occurred' });
 });
 
