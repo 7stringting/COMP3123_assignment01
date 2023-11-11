@@ -14,18 +14,20 @@ routes.get("/user", async (req, res) => {
 });
 
 // Add a New User
-routes.post('/signup', (req, res) => {
+routes.post('/signup', async (req, res) => {
     const user = req.body;
+    console.log(user)
 
     if (!user || !user.username || !user.password) {
       res.status(400).json({ message: 'Username and password are required' });
     } else {
 
-      const existingUser = users.find((u) => u.username === user.username);
+      const existingUser = false //userModel.find((u) => u.username === user.username);
       if (existingUser) {
         res.status(409).json({ message: 'Username already exists' });
       } else {
-        users.push(user);
+        newUser = new userModel(user) ;
+        await newUser.save()
         res.status(201).json({ message: 'User account created successfully' });
       }
     }

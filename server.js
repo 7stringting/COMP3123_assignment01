@@ -4,7 +4,9 @@ const userModel = require("./model/user.js");
 const bcrypt = require("bcrypt");
 const app = express(); 
 
-const SERVER_PORT = 3002;
+app.use(express.json())
+
+const SERVER_PORT = 2001;
 
 // const DB_CONNECTION_STRING = "mongodb://localhost:27017/comp3123_assignment1";
 const DB_CONNECTION_STRING = "mongodb+srv://aaloreabi2000:mahhSuBc4mTzTg5H@cluster0.z7sm5qd.mongodb.net/comp3123_assignment1?retryWrites=true&w=majority"
