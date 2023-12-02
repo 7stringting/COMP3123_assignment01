@@ -3,17 +3,7 @@ const userModel = require('../model/user.js');
 const bcrypt = require("bcrypt"); 
 const routes = express.Router();
 
-// Get All Users
-routes.get("/user", async (req, res) => {
-    try {
-        const userList = await userModel.find();
-        res.status(200).json(userList);
-    } catch (error) {
-        res.status(500).json(error);
-    }
-}); 
-
-// Add a New User
+// Create User
 routes.post('/signup', async (req, res) => {
   const user = req.body;
   console.log(user);
@@ -21,24 +11,23 @@ routes.post('/signup', async (req, res) => {
   if (!user || !user.username || !user.password) {
       res.status(400).json({ message: 'Username and password are required' });
   } else {
-      // Check if user already exists
+      // Checking if user already exists
       const existingUser = await userModel.findOne({ username: user.username });
       if (existingUser) {
           res.status(409).json({ message: 'Username already exists' });
       } else {
-          // Hash the password
+          // Hashing the password
           const salt = await bcrypt.genSalt(10);
           const hashedPassword = await bcrypt.hash(user.password, salt);
           user.password = hashedPassword;
 
-          // Create a new user
+          // Creating the new user
           const newUser = new userModel(user);
           await newUser.save();
           res.status(201).json({ message: 'User account created successfully' });
       }
   }
 });    
-
 
 // User Login
 routes.post("/login", async (req, res) => {

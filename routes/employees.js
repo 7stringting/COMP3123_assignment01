@@ -3,7 +3,7 @@ const employeeModel = require('../model/employee');
 const routes = express.Router();
 
 // Get All Employees 
-routes.get('/emp/employees', async (req, res, next) => {
+routes.get('/employees', async (req, res, next) => {
     try {
         const employeeList = await employeeModel.find();
         res.status(200).json(employeeList);
@@ -27,10 +27,10 @@ routes.post("/employees", async (req, res) => {
 });
 
 // Get Employee by ID 
-routes.get('/emp/employees/:eid', async (req, res, next) => {
+routes.get('/employees/:eid', async (req, res, next) => {
     try {
         const employeeId = req.params.eid;
-        const employee = await Employee.findById(employeeId);
+        const employee = await employeeModel.findById(employeeId);
 
         if (!employee) {
             res.status(404).json({ message: 'Employee not found' });
@@ -42,12 +42,12 @@ routes.get('/emp/employees/:eid', async (req, res, next) => {
     }
 });
 
-// Update Employee 
-routes.put('/emp/employees/:eid', async (req, res, next) => {
+// Update Employee by ID
+routes.put('/employees/:eid', async (req, res, next) => {
     try {
         const employeeId = req.params.eid;
         const updatedData = req.body;
-        const updatedEmployee = await Employee.findByIdAndUpdate(employeeId, updatedData, { new: true });
+        const updatedEmployee = await employeeModel.findByIdAndUpdate(employeeId, updatedData, { new: true });
 
         if (!updatedEmployee) {
             res.status(404).json({ message: 'Employee not found' });
@@ -60,10 +60,10 @@ routes.put('/emp/employees/:eid', async (req, res, next) => {
 });
 
 // Delete Employee 
-routes.delete('/emp/employees', async (req, res, next) => {
+routes.delete('/employees/:eid', async (req, res, next) => {
     try {
-        const employeeId = req.query.eid;
-        const deletedEmployee = await Employee.findByIdAndDelete(employeeId);
+        const employeeId = req.params.eid;
+        const deletedEmployee = await employeeModel.findByIdAndDelete(employeeId);
 
         if (!deletedEmployee) {
             res.status(404).json({ message: 'Employee not found' });
