@@ -11,27 +11,34 @@ routes.get("/user", async (req, res) => {
     } catch (error) {
         res.status(500).json(error);
     }
-});
+}); 
 
 // Add a New User
 routes.post('/signup', async (req, res) => {
-    const user = req.body;
-    console.log(user)
+  const user = req.body;
+  console.log(user);
 
-    if (!user || !user.username || !user.password) {
+  if (!user || !user.username || !user.password) {
       res.status(400).json({ message: 'Username and password are required' });
-    } else {
-
-      const existingUser = false //userModel.find((u) => u.username === user.username);
+  } else {
+      // Check if user already exists
+      const existingUser = await userModel.findOne({ username: user.username });
       if (existingUser) {
-        res.status(409).json({ message: 'Username already exists' });
+          res.status(409).json({ message: 'Username already exists' });
       } else {
-        newUser = new userModel(user) ;
-        await newUser.save()
-        res.status(201).json({ message: 'User account created successfully' });
+          // Hash the password
+          const salt = await bcrypt.genSalt(10);
+          const hashedPassword = await bcrypt.hash(user.password, salt);
+          user.password = hashedPassword;
+
+          // Create a new user
+          const newUser = new userModel(user);
+          await newUser.save();
+          res.status(201).json({ message: 'User account created successfully' });
       }
-    }
-  });
+  }
+});    
+
 
 // User Login
 routes.post("/login", async (req, res) => {

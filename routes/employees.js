@@ -1,33 +1,30 @@
 const express = require('express');
-const Employee = require('../model/employee'); 
+const employeeModel = require('../model/employee'); 
 const routes = express.Router();
 
 // Get All Employees 
 routes.get('/emp/employees', async (req, res, next) => {
     try {
-        const employeeList = await Employee.find();
+        const employeeList = await employeeModel.find();
         res.status(200).json(employeeList);
     } catch (error) {
-        next(error); // Pass the error to the error-handling middleware
+        next(error); 
     }
 });
 
-//Create Employee
+// Create Employee
 routes.post("/employees", async (req, res) => {
-    console.log(req.body)
-    try{
+    console.log(req.body);
+    try {
         const newEmployee = new employeeModel({
             ...req.body
-        })
-        await newEmployee.save()
-        //EmployeeModel.create({})
-        res.status(200).send(newEmployee)
-    }catch(error){
-        res.status(500).send(error)
+        });
+        await newEmployee.save();
+        res.status(201).json(newEmployee); 
+    } catch(error) {
+        res.status(500).json({ message: error.message }); 
     }
-
-    //res.send({message: "Add NEW Employee"})
-})
+});
 
 // Get Employee by ID 
 routes.get('/emp/employees/:eid', async (req, res, next) => {
